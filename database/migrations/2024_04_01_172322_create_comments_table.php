@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('id')->on('poducts')->onDelete('cascade');
             $table->text('text');
             $table->tinyInteger('is_approved')->default(0);
             $table->timestamps();
