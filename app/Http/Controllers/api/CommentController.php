@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\ReviewRating;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -83,4 +84,22 @@ class CommentController extends Controller
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
+
+    public function reviewstore(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'comment_id' => 'required|exists:comments,id',
+            'star_rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        $review = new ReviewRating();
+        $review->user_id = $request->user_id;
+        $review->comment_id = $request->comment_id;
+        $review->star_rating = $request->star_rating;
+        $review->save();
+
+        return redirect()->back()->with('flash_msg_success', 'Your review has been submitted successfully.');
+    }
+
 }
