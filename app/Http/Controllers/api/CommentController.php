@@ -15,16 +15,17 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($product_id)
     {
-        $approvedComments = Comment::where('approved', true)
+        $approvedComments = Comment::where('is_approved', true)
+            ->where('product_id', $product_id) // Filter by product ID
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
 
         return response()->json($approvedComments);
     }
-    
+
     /**
      * Store a newly created comment in storage.
      *
