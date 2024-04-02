@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('product_id')->references('id')->on('poducts')->onDelete('cascade');
             $table->text('text');
             $table->tinyInteger('is_approved')->default(0);
+            $table->unsignedTinyInteger('rating')->default(0);
             $table->timestamps();
         });
     }

@@ -36,4 +36,12 @@ class Comment extends Model
     {
         return $this->is_approved === 1;
     }
+
+    public static function getHighestRatedComments($productId, $limit = 5)
+    {
+        return self::where('product_id', $productId)
+            ->orderBy('rating', 'desc')
+            ->take($limit)
+            ->get();
+    }
 }

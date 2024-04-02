@@ -6,49 +6,89 @@ use App\Models\Comment;
 use App\Models\ReviewRating;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
     /**
-     * Display a listing of the comments.
+     * Display the 5 most recently approved comments.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $comments = Comment::all();
-        return response()->json($comments);
-    }
+        $approvedComments = Comment::where('approved', true)
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
 
+        return response()->json($approvedComments);
+    }
+    
     /**
      * Store a newly created comment in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function storeComment(Request $request)
     {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'text' => 'required|string',
-            'is_approved' => 'boolean',
-        ]);
-
-        $comment = Comment::create($request->all());
+        $comment = new Comment();
+        $comment->user_id = Auth::user()->id;
+        $comment->product_id = $request->product_id;
+        $comment->text = $request->text;
+        $comment->is_approved = 0; // Default to unapproved
+        $comment->save();
 
         return response()->json($comment, Response::HTTP_CREATED);
     }
 
     /**
-     * Display the specified comment.
+     * Store a newly created review in storage.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function reviewstore(Request $request)
     {
-        $comment = Comment::findOrFail($id);
-        return response()->json($comment);
+        $request->validate([
+            'comment_id' => 'required|exists:comments,id',
+            'star_rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        $review = new ReviewRating();
+        $review->user_id = Auth::user()->id;
+        $review->comment_id = $request->comment_id;
+        $review->star_rating = $request->star_rating;
+        $review->save();
+
+        // Update the average rating for the book
+        $this->updateCommentRating($request->comment_ident_id);
+
+        return redirect()->back()->with('flash_msg_success', 'Your review has been submitted successfully.');
+    }
+
+    /**
+     * Calculate and update the average rating for a comment.
+     *
+     * @param  int  $comment_id
+     * @return void
+     */
+    private function updateCommentRating($comment_id)
+    {
+        $comment = Comment::findOrFail($comment_id);
+
+        // Get all review ratings for this comment
+        $reviewRatings = ReviewRating::where('comment_id', $comment_id)->get();
+
+        if ($reviewRatings->count() > 0) {
+            // Calculate the average rating
+            $averageRating = $reviewRatings->avg('star_rating');
+
+            // Update the comment's rating
+            $comment->rating = (int) round($averageRating);
+            $comment->save();
+        }
     }
 
     /**
@@ -61,7 +101,6 @@ class CommentController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'text' => 'required|string',
             'is_approved' => 'boolean',
         ]);
 
@@ -83,23 +122,6 @@ class CommentController extends Controller
         $comment->delete();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
-    }
-
-    public function reviewstore(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'comment_id' => 'required|exists:comments,id',
-            'star_rating' => 'required|integer|min:1|max:5',
-        ]);
-
-        $review = new ReviewRating();
-        $review->user_id = $request->user_id;
-        $review->comment_id = $request->comment_id;
-        $review->star_rating = $request->star_rating;
-        $review->save();
-
-        return redirect()->back()->with('flash_msg_success', 'Your review has been submitted successfully.');
     }
 
 }
