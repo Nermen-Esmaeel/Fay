@@ -11,6 +11,7 @@ class Comment extends Model
 
     protected $fillable = [
         'user_id',
+        'product_id',
         'text',
         'is_approved',
     ];
@@ -23,6 +24,11 @@ class Comment extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function review_ratings()
+    {
+        return $this->hasMany(ReviewRating::class);
     }
 
     // to check if comment is Approved
