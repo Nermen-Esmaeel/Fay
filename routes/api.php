@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\PasswordController;
 use App\Http\Controllers\Api\Auth\UserController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\ProductController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -15,7 +17,7 @@ Route::post('auth/register', [AuthController::class, 'register']);
 Route::post('auth/login', [AuthController::class, 'login']);
 
 // Show comments for a specific product
-Route::get('/productComment/{product_id}', [CommentController::class, 'index']);
+Route::post('/productComment/{product_id}', [CommentController::class, 'index']);
 
 Route::middleware(['auth'])->group(function(){
     Route::get('/users', [UserController::class, 'index']);
@@ -32,7 +34,14 @@ Route::middleware(['auth'])->group(function(){
 });
 
 // Update a comment (only admin)
-// Route::put('/productComment/{comment_id}', [CommentController::class, 'update']);
+Route::put('/productComment/{comment_id}', [CommentController::class, 'update']);
 
 // Delete a comment (only admin)
-// Route::delete('/productComment/{comment_id}', [CommentController::class, 'destroy']);
+Route::delete('/productComment/{comment_id}', [CommentController::class, 'destroy']);
+
+// Category Resource
+Route::apiResource('categories', CategoryController::class);
+
+// Product Resource
+Route::apiResource('products', ProductController::class);
+
