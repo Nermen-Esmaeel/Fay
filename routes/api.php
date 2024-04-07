@@ -14,10 +14,15 @@ Route::get('/user', function (Request $request) {
 Route::post('auth/register', [AuthController::class, 'register']);
 Route::post('auth/login', [AuthController::class, 'login']);
 
+
+Route::middleware('auth:api')->group(function(){
+    Route::post('auth/logout', [AuthController::class, 'logout']);
+
 // Show comments for a specific product
 Route::get('/productComment/{product_id}', [CommentController::class, 'index']);
 
 Route::middleware(['auth'])->group(function(){
+
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{user}', [UserController::class, 'show']);
     Route::put('/users/{user}', [UserController::class, 'update']);
