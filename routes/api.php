@@ -9,39 +9,40 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\ProductController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
 
-Route::post('auth/register', [AuthController::class, 'register']);
-Route::post('auth/login', [AuthController::class, 'login']);
+// Route::post('auth/register', [AuthController::class, 'register']);
+// Route::post('auth/login', [AuthController::class, 'login']);
 
-// Show comments for a specific product
-Route::post('/productComment/{product_id}', [CommentController::class, 'index']);
+// // Show comments for a specific product
+// Route::post('/productComment/{product_id}', [CommentController::class, 'index']);
 
-Route::middleware(['auth'])->group(function(){
-    Route::get('/users', [UserController::class, 'index']);
-    Route::get('/users/{user}', [UserController::class, 'show']);
-    Route::put('/users/{user}', [UserController::class, 'update']);
-    Route::delete('/users/{user}', [UserController::class, 'destroy']);
-    Route::post('/change-password', [PasswordController::class, 'changeUserPassword']);
+// Route::middleware(['auth'])->group(function(){
+//     Route::get('/users', [UserController::class, 'index']);
+//     Route::get('/users/{user}', [UserController::class, 'show']);
+//     Route::put('/users/{user}', [UserController::class, 'update']);
+//     Route::delete('/users/{user}', [UserController::class, 'destroy']);
+//     Route::post('/change-password', [PasswordController::class, 'changeUserPassword']);
 
-    // Store a new comment
-    Route::post('/productComment', [CommentController::class, 'storeComment']);
+//     // Store a new comment
+//     Route::post('/productComment', [CommentController::class, 'storeComment']);
 
-    // Store a new review/rating
-    Route::post('/productComment/review', [CommentController::class, 'reviewstore']);
-});
+//     // Store a new review/rating
+//     Route::post('/productComment/review', [CommentController::class, 'reviewstore']);
+// });
 
-// Update a comment (only admin)
-Route::put('/productComment/{comment_id}', [CommentController::class, 'update']);
+// // Update a comment (only admin)
+// Route::put('/productComment/{comment_id}', [CommentController::class, 'update']);
 
-// Delete a comment (only admin)
-Route::delete('/productComment/{comment_id}', [CommentController::class, 'destroy']);
+// // Delete a comment (only admin)
+// Route::delete('/productComment/{comment_id}', [CommentController::class, 'destroy']);
 
-// Category Resource
-Route::apiResource('categories', CategoryController::class);
+// // Category Resource
+// Route::apiResource('categories', CategoryController::class);
 
-// Product Resource
-Route::apiResource('products', ProductController::class);
-
+// // Product Resource
+// // Route::apiResource('products', ProductController::class);
+Route::get('products.index', [ProductController::class, 'index'])->name('products.index');
+Route::post('upload', [ProductController::class, 'store']);
