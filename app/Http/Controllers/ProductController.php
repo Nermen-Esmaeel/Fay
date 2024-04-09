@@ -190,4 +190,26 @@ class ProductController extends Controller
 
         return response()->json(['message' => 'Product deleted successfully'], 200);
     }
+
+    public function updateIsPublished(Request $request, $id) {
+        $request->validate([
+            'is_published' => 'boolean',
+        ]);
+
+        $product = Product::findOrFail($id);
+        $product->update($request->all());
+
+        return response()->json($product);
+    }
+
+    public function updateIsBsetSelling(Request $request, $id) {
+        $request->validate([
+            'is_best_selling' => 'boolean',
+        ]);
+
+        $product = Product::findOrFail($id);
+        $product->update($request->all());
+
+        return response()->json($product);
+    }
 }
