@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Comment;
+use App\Models\Contact;
 
 class DashboardController extends Controller
 {
@@ -37,7 +38,7 @@ class DashboardController extends Controller
         return response()->json(['products' => $products]);
     }
 
-    public function comments(Request $request)
+    public function comments()
     {
         // Retrieve comments with user and product information
         $comments = Comment::with(['user:id,name,email', 'product:id,name'])
@@ -47,5 +48,17 @@ class DashboardController extends Controller
 
         // Return a JSON response
         return response()->json(['comments' => $comments]);
+    }
+
+    public function contacts()
+    {
+        // Retrieve contacts with user information
+        $contacts = Contact::with(['user:id,name,email'])
+            ->select('contact')
+            ->latest() // Order by the latest update
+            ->get();
+
+        // Return a JSON response
+        return response()->json(['contacts' => $contacts]);
     }
 }
