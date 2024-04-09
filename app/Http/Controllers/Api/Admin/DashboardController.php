@@ -61,4 +61,19 @@ class DashboardController extends Controller
         // Return a JSON response
         return response()->json(['contacts' => $contacts]);
     }
+
+    public function show($id)
+    {
+        // Retrieve the contact by its ID
+        $contact = Contact::findOrFail($id);
+
+        // Get the user who created the contact
+        $user = $contact->user;
+
+        // Return the contact and user as a JSON response
+        return response()->json([
+            'contact' => $contact,
+            'user' => $user,
+        ]);
+    }
 }
