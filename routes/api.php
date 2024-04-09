@@ -58,3 +58,4 @@ Route::middleware(['auth'])->group(function(){
 // Delete a comment (only admin)
 // Route::delete('/productComment/{comment_id}', [CommentController::class, 'destroy']);
 
+});

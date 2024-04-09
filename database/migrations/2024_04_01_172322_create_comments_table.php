@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->bigInteger('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('product_id');
-            $table->foreign('product_id')->references('id')->on('poducts')->onDelete('cascade');
+            $table->bigInteger('product_id')->unsigned()->nullable(); ;
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->text('text');
             $table->tinyInteger('is_approved')->default(0);
             $table->unsignedTinyInteger('rating')->default(0);
