@@ -9,6 +9,17 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\HomeController;
+
+
+Route::get('homeBestSelling', [HomeController::class, 'homeBestSelling'])->name('homeBestSelling');
+Route::get('homeReviews', [HomeController::class, 'homeReviews'])->name('homeReviews');
+Route::get('products', [HomeController::class, 'products'])->name('products');
+Route::get('showProduct/{id}', [HomeController::class, 'showProduct'])->name('product.show');
+Route::get('productsRelated', [HomeController::class, 'products'])->name('product.related.products');
+Route::get('product/{id}/comments', [ProductController::class, 'showCommentProduct'])->name('product.comments');
+Route::get('product/serach', [HomeController::class, 'serach'])->name('serach');
+Route::post('contact', [HomeController::class, 'contact'])->name('contact');
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -26,12 +37,6 @@ Route::middleware(['auth'])->group(function(){
     Route::put('/users/{user}', [UserController::class, 'update']);
     Route::delete('/users/{user}', [UserController::class, 'destroy']);
     Route::post('/change-password', [PasswordController::class, 'changeUserPassword']);
-
-    // Store a new comment
-    Route::post('/productComment', [CommentController::class, 'storeComment']);
-
-    // Store a new review/rating
-    Route::post('/productComment/review', [CommentController::class, 'reviewstore']);
 });
 
 // Admin Dashboard Routes :
