@@ -130,10 +130,17 @@ class HomeController extends Controller
     ]);
 
     // Check if the product name exists
-    $productExists = Product::where('name', $request->input('name'))->exists();
+    $productExists = Product::where('name', $request->input('product_name'))->exists();
 
     if ($productExists) {
         // Product exists
+        $product = Product::where('product_name', $request->input('product_name'))->first();
+$contact = new Contact();
+        $contact->name = $request->input('name');
+        $contact->email = $request->input('email');
+        $contact->product_id = $product->id;
+        $contact->message = $request->input('message');
+        $contact->save();
         return response()->json(['status' => 'exist', 'message' => 'Product name exists in the database']);
     } else {
         // Product does not exist
