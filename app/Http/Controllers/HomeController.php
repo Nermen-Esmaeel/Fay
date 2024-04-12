@@ -120,7 +120,25 @@ class HomeController extends Controller
 
     }
 
-    public function contact () {
+    public function contact(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string',
+        'email' => 'required|email',
+        'product_name' => 'required|string',
+        'message' => 'required|string',
+    ]);
 
+    // Check if the product name exists
+    $productExists = Product::where('name', $request->input('name'))->exists();
+
+    if ($productExists) {
+        // Product exists
+        return response()->json(['status' => 'exist', 'message' => 'Product name exists in the database']);
+    } else {
+        // Product does not exist
+        return response()->json(['status' => 'error', 'message' => 'Invalid product name']);
     }
+}
+
 }
