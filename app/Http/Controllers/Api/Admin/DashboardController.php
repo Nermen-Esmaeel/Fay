@@ -53,7 +53,7 @@ class DashboardController extends Controller
     public function contacts()
     {
         // Retrieve contacts with user information
-        $contacts = Contact::select('name', 'email', 'contact')
+        $contacts = Contact::select('id','name', 'email', 'message')
             ->latest() // Order by the latest update
             ->get();
 
