@@ -90,6 +90,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    
     public function update(Request $request, $id)
     {
         // Validate the incoming request data
@@ -116,27 +117,34 @@ class ProductController extends Controller
 
         // Handle image upload (if provided)
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('product_images', 'public');
+                        Storage::disk('public')->delete('images/' . $product->image_path);
+            $imagePath = $request->file('image')->store('images', 'public');
             $product->image_path = $imagePath;
         }
 
         // Handle PDF file uploads (if provided)
         if ($request->hasFile('arabic_file')) {
+              Storage::disk('public')->delete('arabic_files/' . $product->arabic_file_path);
             $product->arabic_file_path = $request->file('arabic_file')->store('arabic_files', 'public');
         }
         if ($request->hasFile('english_file')) {
+            Storage::disk('public')->delete('english_files/' . $product->english_file_path);
             $product->english_file_path = $request->file('english_file')->store('english_files', 'public');
         }
         if ($request->hasFile('ebook_file')) {
+            Storage::disk('public')->delete('ebook_files/' . $product->e_book_file_path);
             $product->e_book_file_path = $request->file('ebook_file')->store('ebook_files', 'public');
         }
         if ($request->hasFile('exercises_file')) {
+            Storage::disk('public')->delete('exercises_files/' . $product->exercises_file_path);
             $product->exercises_file_path = $request->file('exercises_file')->store('exercises_files', 'public');
         }
         if ($request->hasFile('cards_file')) {
+            Storage::disk('public')->delete('cards_files/' . $product->cards_file_path);
             $product->cards_file_path = $request->file('cards_file')->store('cards_files', 'public');
         }
         if ($request->hasFile('short_story_file')) {
+            Storage::disk('public')->delete('short_story_files/' . $product->short_Story_file_path);
             $product->short_Story_file_path = $request->file('short_story_file')->store('short_story_files', 'public');
         }
 
