@@ -31,12 +31,12 @@ class ProductController extends Controller
             'age' => 'required|max:70',
             'about' => 'required|max:600',
             'image' => 'required|image|max:2048',
-            'arabic_file' => 'required|mimes:pdf',
-            'english_file' => 'required|mimes:pdf',
-            'ebook_file' => 'required|mimes:pdf',
-            'exercises_file' => 'required|mimes:pdf',
-            'cards_file' => 'required|mimes:pdf',
-            'short_story_file' => 'required|mimes:pdf',
+            'arabic_file' => 'mimes:pdf',
+            'english_file' => 'mimes:pdf',
+            'ebook_file' => 'mimes:pdf',
+            'exercises_file' => 'mimes:pdf',
+            'cards_file' => 'mimes:pdf',
+            'short_story_file' => 'mimes:pdf',
         ]);
 
         // Save image
