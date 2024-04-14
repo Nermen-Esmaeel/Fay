@@ -45,6 +45,27 @@ class CommentController extends Controller
     }
 
     /**
+    * Show a specific comment by its ID.
+    *
+    * @param int $commentId The ID of the comment.
+    * @return \Illuminate\Http\JsonResponse
+    */
+    public function show($id)
+    {
+        // Retrieve the comment by its ID
+        $comment = Comment::findOrFail($id);
+
+        // Get the user who wrote the comment
+        $user = $comment->user;
+
+        // Return the comment and user as a JSON response
+        return response()->json([
+            'comment' => $comment,
+            'user' => $user,
+        ]);
+    }
+
+    /**
      * Store a newly created review in storage.
      *
      * @param  \Illuminate\Http\Request  $request
