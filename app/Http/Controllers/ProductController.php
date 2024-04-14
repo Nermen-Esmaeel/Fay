@@ -30,7 +30,7 @@ class ProductController extends Controller
             'name' => 'required|max:70',
             'age' => 'required|max:70',
             'about' => 'required|max:600',
-            'image' => 'required|image|max:2048',
+            'image' => 'required|image|mimes:jpeg,png|max:2048',
             'arabic_file' => 'mimes:pdf',
             'english_file' => 'mimes:pdf',
             'ebook_file' => 'mimes:pdf',
