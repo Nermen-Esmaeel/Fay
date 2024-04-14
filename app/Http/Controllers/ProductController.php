@@ -22,7 +22,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+        public function store(Request $request)
     {
         // Validate request data (customize as needed)
         $request->validate([
@@ -43,12 +43,18 @@ class ProductController extends Controller
         $imagePath = $request->file('image')->store('images', 'public');
 
         // Save PDF files
-        $arabicPath = $request->file('arabic_file')->store('arabic_files', 'public');
-        $englishPath = $request->file('english_file')->store('english_files', 'public');
-        $ebookPath = $request->file('ebook_file')->store('ebook_files', 'public');
-        $exercisesPath = $request->file('exercises_file')->store('exercises_files', 'public');
-        $cardsPath = $request->file('cards_file')->store('cards_files', 'public');
-        $shortStoryPath = $request->file('short_story_file')->store('short_story_files', 'public');
+        $arabicFile = $request->file('arabic_file');
+        $arabicPath = $arabicFile ? $arabicFile->store('arabic_files', 'public') : null;
+        $englishFile = $request->file('english_file');
+        $englishPath = $englishFile ? $englishFile->store('english_files', 'public') : null;
+        $ebookFile = $request->file('ebook_file');
+        $ebookPath = $ebookFile ? $ebookFile->store('ebook_files', 'public') : null;
+        $exercisesFile = $request->file('exercises_files');
+        $exercisesPath = $exercisesFile ? $exercisesFile->store('exercises_files', 'public') : null;
+        $cardsFile = $request->file('cards_file');
+        $cardsPath = $cardsFile ? $cardsFile->store('cards_file', 'public') : null;
+        $shortStoryFile = $request->file('short_story_file');
+        $shortStoryPath = $shortStoryFile ? $shortStoryFile->store('shortStoryFile', 'public') : null;
 
         // Create a new product record
         Product::create([
@@ -65,7 +71,7 @@ class ProductController extends Controller
             'short_Story_file_path' => $shortStoryPath,
         ]);
 
-        return redirect()->route('products.index')->with('success', 'Product created successfully!');
+        return redirect()->route('dashboard.products')->with('success', 'Product created successfully!');
     }
 
     /**
