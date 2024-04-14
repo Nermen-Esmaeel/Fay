@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegistrationRequest;
 use App\Models\User;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -48,5 +49,25 @@ class AuthController extends Controller
             'access_token' => $token,
             'type' => 'bearer'
         ]);
+    }
+
+    public function logout()
+    {
+        // get token
+        $token = JWTAuth::getToken();
+
+        // invalidate token
+        $invalidate = JWTAuth::invalidate($token);
+
+        if($invalidate) {
+            return response()->json([
+                'meta' => [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Successfully logged out',
+                ],
+                'data' => [],
+            ]);
+        }
     }
 }
