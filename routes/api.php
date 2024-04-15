@@ -69,7 +69,7 @@ Route::middleware(['isAdmin'])->group(function(){
     // Update Category :
     Route::put('/dashboard/categories/update/{id}', [CategoryController::class, 'update'])->name('dashboard.categories.update');
     // Delete Category :
-    Route::post('/dashboard/categories/destroy/{id}', [CategoryController::class, 'destroy'])->name('dashboard.categories.destroy');
+    Route::delete('/dashboard/categories/destroy/{id}', [CategoryController::class, 'destroy'])->name('dashboard.categories.destroy');
 
 
     // Products index :
@@ -79,7 +79,7 @@ Route::middleware(['isAdmin'])->group(function(){
     // Update Product :
     Route::put('/dashboard/products/update/{id}', [ProductController::class, 'update'])->name('dashboard.products.update');
     // Delete Product :
-    Route::post('/dashboard/products/destroy/{id}', [ProductController::class, 'destroy'])->name('dashboard.products.destroy');
+    Route::delete('/dashboard/products/destroy/{id}', [ProductController::class, 'destroy'])->name('dashboard.products.destroy');
     // Update Is Published Product :
     Route::put('/dashboard/products/update_is_published/{id}', [ProductController::class, 'updateIsPublished'])->name('dashboard.products.updateIsPublished');
 
@@ -93,7 +93,7 @@ Route::middleware(['isAdmin'])->group(function(){
     // Post Comment :
     Route::put('/dashboard/comments/post/{id}', [CommentController::class, 'update'])->name('dashboard.comments.post');
     // Delete Comment :
-    Route::post('/dashboard/comments/destroy/{id}', [CommentController::class, 'destroy'])->name('dashboard.comments.destroy');
+    Route::delete('/dashboard/comments/destroy/{id}', [CommentController::class, 'destroy'])->name('dashboard.comments.destroy');
     // Show Comment :
     Route::get('/dashboard/comments/show/{id}', [CommentController::class, 'show'])->name('dashboard.comments.show');
 

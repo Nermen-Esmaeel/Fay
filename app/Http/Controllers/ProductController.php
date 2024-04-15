@@ -90,7 +90,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    
+
     public function update(Request $request, $id)
     {
         // Validate the incoming request data
@@ -165,7 +165,7 @@ class ProductController extends Controller
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
-        
+
         // Delete the associated image
         if ($product->image_path) {
             Storage::disk('public')->delete('images/' . $product->image_path);
@@ -211,7 +211,8 @@ class ProductController extends Controller
         ]);
 
         $product = Product::findOrFail($id);
-        $product->update($request->all());
+        $product->is_published = $request->is_published;
+        $product->save();
 
         return response()->json($product);
     }
@@ -222,7 +223,8 @@ class ProductController extends Controller
         ]);
 
         $product = Product::findOrFail($id);
-        $product->update($request->all());
+        $product->is_best_selling = $request->is_best_selling;
+        $product->save();
 
         return response()->json($product);
     }

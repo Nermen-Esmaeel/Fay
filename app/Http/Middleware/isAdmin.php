@@ -15,7 +15,7 @@ class isAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth()->user()->isAdmin != 0) {
+        if(auth()->user()->isAdmin = 0) {
             return redirect('api\home');
         } else {
             return $next($request);
