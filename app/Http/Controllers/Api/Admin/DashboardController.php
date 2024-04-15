@@ -30,7 +30,7 @@ class DashboardController extends Controller
 
     public function best_sellings_books() {
         // Retrieve selected product attributes
-        $products = Product::with(['category:id,cat_name'])
+        $products = Product::with(['category:id,name'])
             ->select('id', 'name', 'about', 'image_path', 'is_best_selling')
             ->get();
 
@@ -53,8 +53,7 @@ class DashboardController extends Controller
     public function contacts()
     {
         // Retrieve contacts with user information
-        $contacts = Contact::with(['user:id,name,email'])
-            ->select('contact')
+        $contacts = Contact::select('id','name', 'email', 'message')
             ->latest() // Order by the latest update
             ->get();
 
@@ -67,13 +66,9 @@ class DashboardController extends Controller
         // Retrieve the contact by its ID
         $contact = Contact::findOrFail($id);
 
-        // Get the user who created the contact
-        $user = $contact->user;
-
         // Return the contact and user as a JSON response
         return response()->json([
-            'contact' => $contact,
-            'user' => $user,
+            'contact' => $contact
         ]);
     }
 }
