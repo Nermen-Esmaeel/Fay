@@ -45,9 +45,9 @@ Route::post('auth/register', [AuthController::class, 'register']);
 Route::post('auth/login', [AuthController::class, 'login']);
 
 
-Route::middleware('auth:api')->group(function(){
-    Route::post('auth/logout', [AuthController::class, 'logout']);
-
+    Route::middleware('auth:api')->group(function(){
+        Route::post('auth/logout', [AuthController::class, 'logout']);
+    });
 // Show comments for a specific product
 Route::post('/productComment/{product_id}', [CommentController::class, 'index']);
 
@@ -82,12 +82,12 @@ Route::middleware(['isAdmin'])->group(function(){
     Route::post('/dashboard/products/destroy/{id}', [ProductController::class, 'destroy'])->name('dashboard.products.destroy');
     // Update Is Published Product :
     Route::put('/dashboard/products/update_is_published/{id}', [ProductController::class, 'updateIsPublished'])->name('dashboard.products.updateIsPublished');
-    
+
     // Bset Sellings index :
     Route::get('/dashboard/best_sellings_books', [DashboardController::class, 'best_sellings_books'])->name('dashboard.best_sellings_books');
-    // Update Best Selling Product :    
+    // Update Best Selling Product :
     Route::put('/dashboard/products/update_best_sellings/{id}', [ProductController::class, 'updateIsBsetSelling'])->name('dashboard.products.updateIsBestSellings');
-    
+
     // Comments index :
     Route::get('/dashboard/comments', [DashboardController::class, 'comments'])->name('dashboard.comments');
     // Post Comment :
@@ -96,12 +96,12 @@ Route::middleware(['isAdmin'])->group(function(){
     Route::post('/dashboard/comments/destroy/{id}', [CommentController::class, 'destroy'])->name('dashboard.comments.destroy');
     // Show Comment :
     Route::get('/dashboard/comments/show/{id}', [CommentController::class, 'show'])->name('dashboard.comments.show');
-    
+
     // Contacts index :
     Route::get('/dashboard/contacts', [DashboardController::class, 'contacts'])->name('dashboard.contacts');
     // Show Contact :
     Route::get('/dashboard/contacts/show/{id}', [DashboardController::class, 'show'])->name('dashboard.contacts.show');
-    
+
 
 // Delete a comment (only admin)
 // Route::delete('/productComment/{comment_id}', [CommentController::class, 'destroy']);

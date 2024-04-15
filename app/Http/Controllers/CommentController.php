@@ -85,7 +85,7 @@ class CommentController extends Controller
         $review->save();
 
         // Update the average rating for the book
-        $this->updateCommentRating($request->comment_ident_id);
+        $this->updateCommentRating($request->comment_id);
 
         return redirect()->back()->with('flash_msg_success', 'Your review has been submitted successfully.');
     }
@@ -143,7 +143,7 @@ class CommentController extends Controller
         $comment = Comment::findOrFail($id);
         $comment->delete();
 
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        return response()->json(null,'the Comment deleted successfully', 200);
     }
 
 }
