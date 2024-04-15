@@ -45,6 +45,27 @@ class CommentController extends Controller
     }
 
     /**
+    * Show a specific comment by its ID.
+    *
+    * @param int $commentId The ID of the comment.
+    * @return \Illuminate\Http\JsonResponse
+    */
+    public function show($id)
+    {
+        // Retrieve the comment by its ID
+        $comment = Comment::findOrFail($id);
+
+        // Get the user who wrote the comment
+        $user = $comment->user;
+
+        // Return the comment and user as a JSON response
+        return response()->json([
+            'comment' => $comment,
+            'user' => $user,
+        ]);
+    }
+
+    /**
      * Store a newly created review in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -64,7 +85,7 @@ class CommentController extends Controller
         $review->save();
 
         // Update the average rating for the book
-        $this->updateCommentRating($request->comment_ident_id);
+        $this->updateCommentRating($request->comment_id);
 
         return redirect()->back()->with('flash_msg_success', 'Your review has been submitted successfully.');
     }
@@ -122,7 +143,7 @@ class CommentController extends Controller
         $comment = Comment::findOrFail($id);
         $comment->delete();
 
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        return response()->json(null,'the Comment deleted successfully', 200);
     }
 
 }

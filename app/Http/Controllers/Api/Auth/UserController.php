@@ -22,20 +22,20 @@ class UserController extends Controller
     {
         try {
             $users = User::all();
-            return Response::json($users);
+            return response()->json($users);
         } catch (\Exception $e) {
-            return Response::json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
     public function show(User $user)
     {
         try {
-            return Response::json($user);
+            return response()->json($user);
         } catch (ModelNotFoundException $e) {
-            return Response::json(['error' => 'User not found'], 404);
+            return response()->json(['error' => 'User not found'], 404);
         } catch (\Exception $e) {
-            return Response::json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
@@ -43,11 +43,11 @@ class UserController extends Controller
     {
         try {
             $user->update($request->validated());
-            return Response::json($user);
+            return response()->json($user);
         } catch (ValidationException $e) {
-            return Response::json(['error' => $e->errors()], 400);
+            return response()->json(['error' => $e->errors()], 400);
         } catch (\Exception $e) {
-            return Response::json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
@@ -55,9 +55,9 @@ class UserController extends Controller
     {
         try {
             $user->delete();
-            return Response::json(null, 204);
+            return response()->json(null, 204);
         } catch (\Exception $e) {
-            return Response::json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 }

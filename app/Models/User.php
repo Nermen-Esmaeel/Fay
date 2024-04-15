@@ -12,6 +12,13 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 
+    protected $fillable = [
+        'isAdmin',
+        'name',
+        'email',
+        'password'
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -73,4 +80,5 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
 }
