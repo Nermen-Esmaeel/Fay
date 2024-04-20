@@ -65,7 +65,9 @@ Route::middleware(['isAdmin'])->group(function(){
     // Categories index :
     Route::get('/dashboard/categories', [DashboardController::class, 'categories'])->name('dashboard.categories');
     // Products for specific category :
-    Route::get('/dashboard/categoryProducts/{id}', [DashboardController::class, 'categoryProducts'])->name('dashboard.category.Products');
+    Route::get('/dashboard/categoryProducts/{id}', [DashboardController::class, 'categoryProducts'])->name('dashboard.category.products');
+    // Show specific product :
+    Route::get('/dashboard/showProduct/{id}', [DashboardController::class, 'showProduct'])->name('dashboard.show.product');
     // Add Category :
     Route::post('/dashboard/categories/store', [CategoryController::class, 'store'])->name('dashboard.categories.store');
     // Update Category :

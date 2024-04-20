@@ -31,6 +31,12 @@ class DashboardController extends Controller
         return response()->json($products);
     }
 
+    public function showProduct($id) {
+        $product = Product::findOrFail($id);
+
+        return response()->json($product);
+    }
+
     public function products() {
         $products = Product::with('category')
             ->orderBy('created_at', 'desc') // Sort by creation date in descending order
