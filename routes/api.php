@@ -17,8 +17,8 @@ Route::get('homeReviews', [HomeController::class, 'homeReviews'])->name('homeRev
 Route::get('products', [HomeController::class, 'products'])->name('products');
 Route::get('showProduct/{id}', [HomeController::class, 'showProduct'])->name('product.show');
 Route::get('productsRelated', [HomeController::class, 'products'])->name('product.related.products');
-Route::get('product/{id}/comments', [ProductController::class, 'showCommentProduct'])->name('product.comments');
-Route::get('product/serach', [HomeController::class, 'serach'])->name('serach');
+Route::get('product/{id}/comments', [HomeController::class, 'showCommentProduct'])->name('product.comments');
+Route::get('product/serach/{search_txt}', [HomeController::class, 'serach'])->name('serach');
 Route::post('contact', [HomeController::class, 'contact'])->name('contact');
 
 Route::get('/user', function (Request $request) {
@@ -63,7 +63,7 @@ Route::middleware(['auth'])->group(function(){
 // Admin Dashboard Routes :
 Route::middleware(['isAdmin'])->group(function(){
     // Categories index :
-    Route::get('/dashboard/categories', [DashboardController::class, 'categories'])->name('dashboard.categories');
+    Route::get('/dashboard/categories', [DashboardController::class, 'categories'])->withoutMiddleware(['auth:api']);
     // Add Category :
     Route::post('/dashboard/categories/store', [CategoryController::class, 'store'])->name('dashboard.categories.store');
     // Update Category :

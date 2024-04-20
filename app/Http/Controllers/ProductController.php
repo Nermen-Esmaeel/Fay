@@ -30,7 +30,7 @@ class ProductController extends Controller
             'name' => 'required|max:70',
             'age' => 'required|max:70',
             'about' => 'required|max:600',
-            'image' => 'required|image|mimes:jpeg,png|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'arabic_file' => 'mimes:pdf',
             'english_file' => 'mimes:pdf',
             'ebook_file' => 'mimes:pdf',
@@ -49,15 +49,15 @@ class ProductController extends Controller
         $englishPath = $englishFile ? $englishFile->store('english_files', 'public') : null;
         $ebookFile = $request->file('ebook_file');
         $ebookPath = $ebookFile ? $ebookFile->store('ebook_files', 'public') : null;
-        $exercisesFile = $request->file('exercises_files');
+        $exercisesFile = $request->file('exercises_file');
         $exercisesPath = $exercisesFile ? $exercisesFile->store('exercises_files', 'public') : null;
         $cardsFile = $request->file('cards_file');
-        $cardsPath = $cardsFile ? $cardsFile->store('cards_file', 'public') : null;
+        $cardsPath = $cardsFile ? $cardsFile->store('cards_files', 'public') : null;
         $shortStoryFile = $request->file('short_story_file');
-        $shortStoryPath = $shortStoryFile ? $shortStoryFile->store('shortStoryFile', 'public') : null;
+        $shortStoryPath = $shortStoryFile ? $shortStoryFile->store('short_story_files', 'public') : null;
 
         // Create a new product record
-        Product::create([
+      $product =  Product::create([
             'category_id' => $request->input('category_id'),
             'name' => $request->input('name'),
             'age' => $request->input('age'),
@@ -71,7 +71,11 @@ class ProductController extends Controller
             'short_Story_file_path' => $shortStoryPath,
         ]);
 
-        return redirect()->route('dashboard.products')->with('success', 'Product created successfully!');
+        return response()->json([
+            'product' => $product ,
+            'message' => 'Product created successfully'
+        ]);
+
     }
 
     /**
@@ -151,7 +155,7 @@ class ProductController extends Controller
         // Save the changes
         $product->save();
 
-        return response()->json(['message' => 'Product updated successfully']);
+
     }
 
     /**
