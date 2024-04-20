@@ -102,9 +102,7 @@ class HomeController extends Controller
             'image_path' => $product->image_path,
             'arabic_file_path' => $product->arabic_file_path,
             'english_file_path' => $product->english_file_path,
-            'e_book_file_path' => $product->e_book_file_path,
             'exercises_file_path' => $product->exercises_file_path,
-            'cards_file_path' => $product->cards_file_path,
             'short_Story_file_path' => $product->short_Story_file_path,
         ]);
     }
@@ -137,7 +135,7 @@ class HomeController extends Controller
     if ($productExists) {
         // Product exists
         $product = Product::where('product_name', $request->input('product_name'))->first();
-$contact = new Contact();
+        $contact = new Contact();
         $contact->name = $request->input('name');
         $contact->email = $request->input('email');
         $contact->product_id = $product->id;

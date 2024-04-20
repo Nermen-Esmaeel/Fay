@@ -23,9 +23,7 @@ return new class extends Migration
             $table->string('image_path');            
             $table->string('arabic_file_path')->nullable();
             $table->string('english_file_path')->nullable();
-            $table->string('e_book_file_path')->nullable();
             $table->string('exercises_file_path')->nullable();
-            $table->string('cards_file_path')->nullable();
             $table->string('short_Story_file_path')->nullable();
             $table->timestamps();
         });
