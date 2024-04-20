@@ -78,6 +78,8 @@ Route::middleware(['isAdmin'])->group(function(){
 
     // Products index :
     Route::get('/dashboard/products', [DashboardController::class, 'products'])->name('dashboard.products');
+    // Search products :
+    Route::get('/dashboard/searchProducts', [DashboardController::class, 'searchProducts'])->name('dashboard.search.products');
     // Add Product :
     Route::post('/dashboard/products/store', [ProductController::class, 'store'])->name('dashboard.products.store');
     // Update Product :

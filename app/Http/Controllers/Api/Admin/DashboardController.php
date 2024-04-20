@@ -46,6 +46,16 @@ class DashboardController extends Controller
         return response()->json($products);
     }
 
+    public function searchProducts(Request $request)
+    {
+        $searchTerm = $request->input('search'); // Get the search term from the user
+
+        // Query products based on the search term (case-insensitive)
+        $products = Product::where('name', 'like', '%' . $searchTerm . '%')->get();
+
+        return response()->json(['products' => $products]);
+    }
+
     public function comments()
     {
         // Retrieve comments with user and product information
