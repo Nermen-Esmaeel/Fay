@@ -32,13 +32,13 @@ class ProductController extends Controller
             'name' => 'required|max:70',
             'age' => 'required|max:70',
             'about' => 'required|max:600',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'arabic_file' => 'mimes:pdf',
             'english_file' => 'mimes:pdf',
             'exercises_file' => 'mimes:pdf',
             'short_story_file' => 'mimes:pdf',
-            'cards_file' => 'mimes:pdf',
-            'ebooks_file' => 'mimes:pdf',
+            'cards_file.*' => 'mimes:pdf',
+            'ebooks_file.*' => 'mimes:pdf',
         ]);
 
         // Save image
@@ -49,12 +49,8 @@ class ProductController extends Controller
         $arabicPath = $arabicFile ? $arabicFile->store('arabic_files', 'public') : null;
         $englishFile = $request->file('english_file');
         $englishPath = $englishFile ? $englishFile->store('english_files', 'public') : null;
-        $ebookFile = $request->file('ebook_file');
-        $ebookPath = $ebookFile ? $ebookFile->store('ebook_files', 'public') : null;
         $exercisesFile = $request->file('exercises_file');
         $exercisesPath = $exercisesFile ? $exercisesFile->store('exercises_files', 'public') : null;
-        $cardsFile = $request->file('cards_file');
-        $cardsPath = $cardsFile ? $cardsFile->store('cards_files', 'public') : null;
         $shortStoryFile = $request->file('short_story_file');
         $shortStoryPath = $shortStoryFile ? $shortStoryFile->store('short_story_files', 'public') : null;
 
@@ -72,6 +68,7 @@ class ProductController extends Controller
         $product->short_Story_file_path = $shortStoryPath;
         $product->save();
 
+
         if ($request->hasFile('cards_file')) {
             foreach ($request->file('cards_file') as $card) {
                 $cardPath = $card->store('cards_file', 'public');
@@ -79,6 +76,7 @@ class ProductController extends Controller
                 $card->product_id = $product->id;
                 $card->card_file_path = $cardPath;
                 $card->save();
+
             }
         }
 

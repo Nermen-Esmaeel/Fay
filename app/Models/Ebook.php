@@ -10,6 +10,7 @@ class Ebook extends Model
     use HasFactory;
 
     protected $fillable = [
+        'product_id',
         'ebook_file_path',
     ];
 

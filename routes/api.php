@@ -18,7 +18,7 @@ Route::get('products', [HomeController::class, 'products'])->name('products');
 Route::get('showProduct/{id}', [HomeController::class, 'showProduct'])->name('product.show');
 Route::get('productsRelated', [HomeController::class, 'products'])->name('product.related.products');
 Route::get('product/{id}/comments', [HomeController::class, 'showCommentProduct'])->name('product.comments');
-Route::get('product/serach/{search_txt}', [HomeController::class, 'serach'])->name('serach');
+Route::get('product/serach/{search_txt}', [HomeController::class, 'search'])->name('serach');
 Route::post('contact', [HomeController::class, 'contact'])->name('contact');
 Route::get('contact/productsName', [HomeController::class, 'productsName'])->name('products.name');
 
