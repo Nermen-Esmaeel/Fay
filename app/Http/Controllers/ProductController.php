@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Storage;
 use App\Models\Product;
+use App\Models\Card;
+use App\Models\Ebook;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -33,10 +35,10 @@ class ProductController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'arabic_file' => 'mimes:pdf',
             'english_file' => 'mimes:pdf',
-            'ebook_file' => 'mimes:pdf',
             'exercises_file' => 'mimes:pdf',
-            'cards_file' => 'mimes:pdf',
             'short_story_file' => 'mimes:pdf',
+            'cards_file' => 'mimes:pdf',
+            'ebooks_file' => 'mimes:pdf',
         ]);
 
         // Save image
@@ -57,19 +59,39 @@ class ProductController extends Controller
         $shortStoryPath = $shortStoryFile ? $shortStoryFile->store('short_story_files', 'public') : null;
 
         // Create a new product record
-      $product =  Product::create([
-            'category_id' => $request->input('category_id'),
-            'name' => $request->input('name'),
-            'age' => $request->input('age'),
-            'about' => $request->input('about'),
-            'image_path' => $imagePath,
-            'arabic_file_path' => $arabicPath,
-            'english_file_path' => $englishPath,
-            'e_book_file_path' => $ebookPath,
-            'exercises_file_path' => $exercisesPath,
-            'cards_file_path' => $cardsPath,
-            'short_Story_file_path' => $shortStoryPath,
-        ]);
+
+        $product = new Product();
+        $product->category_id = $request->input('category_id');
+        $product->name = $request->input('name');
+        $product->age = $request->input('age');
+        $product->about = $request->input('about');
+        $product->image_path = $imagePath;
+        $product->arabic_file_path = $arabicPath;
+        $product->english_file_path = $englishPath;
+        $product->exercises_file_path = $exercisesPath;
+        $product->short_Story_file_path = $shortStoryPath;
+        $product->save();
+
+        if ($request->hasFile('cards_file')) {
+            foreach ($request->file('cards_file') as $card) {
+                $cardPath = $card->store('cards_file', 'public');
+                $card = new Card();
+                $card->product_id = $product->id;
+                $card->card_file_path = $cardPath;
+                $card->save();
+            }
+        }
+
+        if ($request->hasFile('ebooks_files')) {
+            foreach ($request->file('ebooks_files') as $ebook) {
+                $ebookPath = $ebook->store('ebooks_file', 'public');
+                $ebook = new Ebook();
+                $ebook->product_id = $product->id;
+                $ebook->ebook_file_path = $ebookPath;
+                $ebook->save();
+            }
+        }
+
 
         return response()->json([
             'product' => $product ,
@@ -105,9 +127,7 @@ class ProductController extends Controller
             'image' => 'image|mimes:jpeg,png|max:2048', // Validate image file
             'arabic_file' => 'file|mimes:pdf',
             'english_file' => 'file|mimes:pdf',
-            'ebook_file' => 'file|mimes:pdf',
             'exercises_file' => 'file|mimes:pdf',
-            'cards_file' => 'file|mimes:pdf',
             'short_story_file' => 'file|mimes:pdf',
         ]);
 
@@ -135,17 +155,9 @@ class ProductController extends Controller
             Storage::disk('public')->delete('english_files/' . $product->english_file_path);
             $product->english_file_path = $request->file('english_file')->store('english_files', 'public');
         }
-        if ($request->hasFile('ebook_file')) {
-            Storage::disk('public')->delete('ebook_files/' . $product->e_book_file_path);
-            $product->e_book_file_path = $request->file('ebook_file')->store('ebook_files', 'public');
-        }
         if ($request->hasFile('exercises_file')) {
             Storage::disk('public')->delete('exercises_files/' . $product->exercises_file_path);
             $product->exercises_file_path = $request->file('exercises_file')->store('exercises_files', 'public');
-        }
-        if ($request->hasFile('cards_file')) {
-            Storage::disk('public')->delete('cards_files/' . $product->cards_file_path);
-            $product->cards_file_path = $request->file('cards_file')->store('cards_files', 'public');
         }
         if ($request->hasFile('short_story_file')) {
             Storage::disk('public')->delete('short_story_files/' . $product->short_Story_file_path);
@@ -178,15 +190,6 @@ class ProductController extends Controller
         // Delete the associated Arabic file
         if ($product->arabic_file_path) {
             Storage::disk('public')->delete('arabic_files/' . $product->arabic_file_path);
-        }
-
-        // Delete the associated Card file
-        if ($product->cards_file_path) {
-            Storage::disk('public')->delete('cards_files/' . $product->cards_file_path);
-        }
-        // Delete the associated E-Book file
-        if ($product->e_book_file_path) {
-            Storage::disk('public')->delete('ebook_files/' . $product->e_book_file_path);
         }
 
         // Delete the associated English file
@@ -227,9 +230,13 @@ class ProductController extends Controller
         ]);
 
         $product = Product::findOrFail($id);
-        $product->is_best_selling = $request->is_best_selling;
-        $product->save();
+        if($product->is_published) {
+            $product->is_best_selling = $request->is_best_selling;
+            $product->save();
 
-        return response()->json($product);
+            return response()->json($product);
+        } else {
+            return response()->json('error product is not published');
+        }
     }
 }

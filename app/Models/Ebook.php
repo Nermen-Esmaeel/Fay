@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Card extends Model
+class Ebook extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'card_file_path',
+        'ebook_file_path',
     ];
 
     public function product()

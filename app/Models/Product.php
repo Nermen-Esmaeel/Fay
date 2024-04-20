@@ -16,12 +16,20 @@ class Product extends Model
         'image_path',
         'arabic_file_path',
         'english_file_path',
-        'e-book_file_path',
         'exercises_file_path',
-        'cards_file_path',
         'short_Story_file_path',
         'category_id',
     ];
+
+    public function cards()
+    {
+        return $this->hasMany(Card::class);
+    }
+
+    public function ebooks()
+    {
+        return $this->hasMany(Ebook::class);
+    }
 
     public function category()
     {

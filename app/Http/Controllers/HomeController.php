@@ -70,22 +70,34 @@ class HomeController extends Controller
         ]);
     }
 
-    public function serach ($search_txt) {
-        // Search products by name or description
-        $products = Product::whereTranslationLike('name', '%' . $search_txt . '%')
-            ->orWhereTranslationLike('description', '%' . $search_txt . '%')
-            ->get();
+    // public function serach ($search_txt) {
+    //     // Search products by name or description
+    //     $products = Product::whereTranslationLike('name', '%' . $search_txt . '%')
+    //         ->orWhereTranslationLike('description', '%' . $search_txt . '%')
+    //         ->get();
 
-        // Search products by variations (attribute values)
-        $productsWithVariations = Product::whereHas('variations', function ($query) use ($search_txt) {
-            $query->where('value', 'like', $search_txt);
-        })->get();
+    //     // Search products by variations (attribute values)
+    //     $productsWithVariations = Product::whereHas('variations', function ($query) use ($search_txt) {
+    //         $query->where('value', 'like', $search_txt);
+    //     })->get();
 
-        // Combine both sets of results
-        $combinedProducts = $products->concat($productsWithVariations);
+    //     // Combine both sets of results
+    //     $combinedProducts = $products->concat($productsWithVariations);
 
-        // Return the combined products as a JSON response
-        return response()->json(['products' => $combinedProducts]);
+    //     // Return the combined products as a JSON response
+    //     return JsonResponse::json(['products' => $combinedProducts]);
+    // }
+
+    public function search(Request $request)
+    {
+        $searchTerm = $request->input('search'); // Get the search term from the user
+
+        // Query products based on the search term (case-insensitive)
+        $products = Product::where('name', 'like', '%' . $searchTerm . '%')->get();
+
+
+        return response()->json(['products' => $products]);
+
     }
 
     public function showProduct ($id) {
@@ -102,9 +114,7 @@ class HomeController extends Controller
             'image_path' => $product->image_path,
             'arabic_file_path' => $product->arabic_file_path,
             'english_file_path' => $product->english_file_path,
-            'e_book_file_path' => $product->e_book_file_path,
             'exercises_file_path' => $product->exercises_file_path,
-            'cards_file_path' => $product->cards_file_path,
             'short_Story_file_path' => $product->short_Story_file_path,
         ]);
     }
