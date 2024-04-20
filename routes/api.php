@@ -20,6 +20,7 @@ Route::get('productsRelated', [HomeController::class, 'products'])->name('produc
 Route::get('product/{id}/comments', [HomeController::class, 'showCommentProduct'])->name('product.comments');
 Route::get('product/serach/{search_txt}', [HomeController::class, 'serach'])->name('serach');
 Route::post('contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('contact/productsName', [HomeController::class, 'productsName'])->name('products.name');
 
 Route::get('/user', function (Request $request) {
     return $request->user();

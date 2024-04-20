@@ -149,5 +149,9 @@ class HomeController extends Controller
         return response()->json(['status' => 'error', 'message' => 'Invalid product name']);
     }
 }
+    public function productsName() {
+        $productsName = Product::pluck('name');
+        return response()->json($productsName);
+    }
 
 }
