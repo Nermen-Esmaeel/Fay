@@ -8,6 +8,8 @@ use App\Http\Requests\RegistrationRequest;
 use App\Models\User;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -27,7 +29,12 @@ class AuthController extends Controller
 
     public function register(RegistrationRequest $request)
     {
-        $user = User::create($request->validated());
+        $requestData = $request->validated();
+        $avatarPath =$this->checkForAvatar($request);
+        $requestData['avatar'] = $avatarPath;
+        
+        $user = User::create($requestData);
+
         if($user){
             $token = auth()->login($user);
             return $this->responseWithToken($token, $user);
@@ -39,6 +46,29 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    // Check for avatar
+    public function checkForAvatar($request)
+    {
+        $avatarPath = null;
+        if ($request->hasFile('avatar')) {
+            // Handle uploaded image
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+        }
+        elseif ($request->filled('avatar_id')) {
+            $avatarFileName = $request->avatar_id;
+            // Check if the avatar file exists in the storage
+            if (Storage::disk('public')->exists("avatars/$avatarFileName.png")) {
+                $avatarPath = "avatars/$avatarFileName.png";
+            } else {
+                return response()->json(['error' => 'Avatar not found'], 404);
+            }
+        }
+
+        return $avatarPath;
+    }
+
+
 
     // Return JWT access token
     public function responseWithToken($token, $user)

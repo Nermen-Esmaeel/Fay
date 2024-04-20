@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Models\Comment;
 use App\Models\Contact;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -31,7 +31,7 @@ class HomeController extends Controller
         });
 
         // Return the best-selling products with category names as a JSON response
-        return JsonResponse::json(['products' => $responseData]);
+        return  response()->json(['products' => $responseData]);
     }
 
     public function homeReviews () {
@@ -55,7 +55,7 @@ class HomeController extends Controller
         });
 
         // Return the latest comments with additional details as a JSON response
-        return JsonResponse::json(['comments' => $responseData]);
+        return  response()->json(['comments' => $responseData]);
     }
 
     public function products () {
@@ -95,7 +95,9 @@ class HomeController extends Controller
         // Query products based on the search term (case-insensitive)
         $products = Product::where('name', 'like', '%' . $searchTerm . '%')->get();
 
+
         return response()->json(['products' => $products]);
+
     }
 
     public function showProduct ($id) {
@@ -118,7 +120,7 @@ class HomeController extends Controller
     }
 
     public function showCommentProduct ($id) {
-        $comments = Comment::whith(['user'])
+        $comments = Comment::with(['user'])
             ->where('product_id', $id)
             ->get();
 
@@ -144,18 +146,22 @@ class HomeController extends Controller
 
     if ($productExists) {
         // Product exists
-        $product = Product::where('product_name', $request->input('product_name'))->first();
+        $product = Product::where('name', $request->input('product_name'))->first();
         $contact = new Contact();
         $contact->name = $request->input('name');
         $contact->email = $request->input('email');
         $contact->product_id = $product->id;
         $contact->message = $request->input('message');
         $contact->save();
-        return response()->json(['status' => 'exist', 'message' => 'Product name exists in the database']);
+        return response()->json(['status' => 'exist', 'message' => 'Successfuly']);
     } else {
         // Product does not exist
         return response()->json(['status' => 'error', 'message' => 'Invalid product name']);
     }
 }
+    public function productsName() {
+        $productsName = Product::pluck('name');
+        return response()->json($productsName);
+    }
 
 }

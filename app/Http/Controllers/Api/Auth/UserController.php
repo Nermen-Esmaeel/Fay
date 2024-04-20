@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Api\Auth\AuthController;
 
 class UserController extends Controller
 {
@@ -42,8 +43,18 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         try {
-            $user->update($request->validated());
+
+            $requestData = $request->validated();
+
+            $authController = new AuthController();
+            $avatarPath =$authController->checkForAvatar($request);
+            if($avatarPath != null){
+                $requestData['avatar'] = $avatarPath;
+            }
+            $user->update($requestData);
+
             return response()->json($user);
+
         } catch (ValidationException $e) {
             return response()->json(['error' => $e->errors()], 400);
         } catch (\Exception $e) {
