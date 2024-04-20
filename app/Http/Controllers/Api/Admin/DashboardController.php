@@ -9,6 +9,8 @@ use App\Models\Product;
 use App\Models\Comment;
 use App\Models\Contact;
 
+use function Laravel\Prompts\select;
+
 class DashboardController extends Controller
 {
     public function categories() {
@@ -19,10 +21,20 @@ class DashboardController extends Controller
         return response()->json(['categories' => $categories]);
     }
 
+    public function categoryProduct($id) {
+        // Retrieve all categories with product counts
+        $products = Product::where('category_id', $id)
+            ->select('id', 'name')
+            ->get();
+
+        // Return a JSON response
+        return response()->json($products);
+    }
+
     public function products() {
         $products = Product::with('category')
-        ->orderBy('created_at', 'desc') // Sort by creation date in descending order
-        ->get();
+            ->orderBy('created_at', 'desc') // Sort by creation date in descending order
+            ->get();
 
         // Return the latest products as JSON
         return response()->json($products);
