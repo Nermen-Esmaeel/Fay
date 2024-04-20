@@ -21,7 +21,7 @@ class DashboardController extends Controller
         return response()->json(['categories' => $categories]);
     }
 
-    public function categoryProduct($id) {
+    public function categoryProducts($id) {
         // Retrieve all categories with product counts
         $products = Product::where('category_id', $id)
             ->select('id', 'name')
