@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Storage;
 use App\Models\Product;
+use App\Models\Card;
+use App\Models\Ebook;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -35,6 +37,8 @@ class ProductController extends Controller
             'english_file' => 'mimes:pdf',
             'exercises_file' => 'mimes:pdf',
             'short_story_file' => 'mimes:pdf',
+            'cards_file' => 'mimes:pdf',
+            'ebooks_file' => 'mimes:pdf',
         ]);
 
         // Save image
@@ -51,17 +55,37 @@ class ProductController extends Controller
         $shortStoryPath = $shortStoryFile ? $shortStoryFile->store('shortStoryFile', 'public') : null;
 
         // Create a new product record
-        Product::create([
-            'category_id' => $request->input('category_id'),
-            'name' => $request->input('name'),
-            'age' => $request->input('age'),
-            'about' => $request->input('about'),
-            'image_path' => $imagePath,
-            'arabic_file_path' => $arabicPath,
-            'english_file_path' => $englishPath,
-            'exercises_file_path' => $exercisesPath,
-            'short_Story_file_path' => $shortStoryPath,
-        ]);
+        $product = new Product();
+        $product->category_id = $request->input('category_id');
+        $product->name = $request->input('name');
+        $product->age = $request->input('age');
+        $product->about = $request->input('about');
+        $product->image_path = $imagePath;
+        $product->arabic_file_path = $arabicPath;
+        $product->english_file_path = $englishPath;
+        $product->exercises_file_path = $exercisesPath;
+        $product->short_Story_file_path = $shortStoryPath;
+        $product->save();
+
+        if ($request->hasFile('cards_file')) {
+            foreach ($request->file('cards_file') as $card) {
+                $cardPath = $card->store('cards_file', 'public');
+                $card = new Card();
+                $card->product_id = $product->id;
+                $card->card_file_path = $cardPath;
+                $card->save();
+            }
+        }
+
+        if ($request->hasFile('ebooks_files')) {
+            foreach ($request->file('ebooks_files') as $ebook) {
+                $ebookPath = $ebook->store('ebooks_file', 'public');
+                $ebook = new Ebook();
+                $ebook->product_id = $product->id;
+                $ebook->ebook_file_path = $ebookPath;
+                $ebook->save();
+            }
+        }
 
         return redirect()->route('dashboard.products')->with('success', 'Product created successfully!');
     }
