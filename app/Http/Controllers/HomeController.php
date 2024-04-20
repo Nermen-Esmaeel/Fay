@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Comment;
+use App\Models\Contact;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 class HomeController extends Controller
