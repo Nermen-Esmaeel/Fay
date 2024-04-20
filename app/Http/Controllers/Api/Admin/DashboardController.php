@@ -28,16 +28,6 @@ class DashboardController extends Controller
         return response()->json($products);
     }
 
-    public function best_sellings_books() {
-        // Retrieve selected product attributes
-        $products = Product::with(['category:id,name'])
-            ->select('id', 'name', 'about', 'image_path', 'is_best_selling')
-            ->get();
-
-        // Return a JSON response
-        return response()->json(['products' => $products]);
-    }
-
     public function comments()
     {
         // Retrieve comments with user and product information

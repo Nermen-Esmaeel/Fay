@@ -220,9 +220,13 @@ class ProductController extends Controller
         ]);
 
         $product = Product::findOrFail($id);
-        $product->is_best_selling = $request->is_best_selling;
-        $product->save();
+        if($product->is_published) {
+            $product->is_best_selling = $request->is_best_selling;
+            $product->save();
 
-        return response()->json($product);
+            return response()->json($product);
+        } else {
+            return response()->json('error product is not published');
+        }
     }
 }
