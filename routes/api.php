@@ -89,8 +89,6 @@ Route::middleware(['isAdmin'])->group(function(){
     // Update Is Published Product :
     Route::put('/dashboard/products/update_is_published/{id}', [ProductController::class, 'updateIsPublished'])->name('dashboard.products.updateIsPublished');
 
-    // Bset Sellings index :
-    Route::get('/dashboard/best_sellings_books', [DashboardController::class, 'best_sellings_books'])->name('dashboard.best_sellings_books');
     // Update Best Selling Product :
     Route::put('/dashboard/products/update_best_sellings/{id}', [ProductController::class, 'updateIsBsetSelling'])->name('dashboard.products.updateIsBestSellings');
 
