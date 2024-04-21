@@ -93,7 +93,9 @@ class HomeController extends Controller
         $searchTerm = $request->input('search'); // Get the search term from the user
 
         // Query products based on the search term (case-insensitive)
-        $products = Product::where('name', 'like', '%' . $searchTerm . '%')->get();
+        $products = Product::where('name', 'like', '%' . $searchTerm . '%')
+            ->where('is_published', true)
+            ->get();
 
 
         return response()->json(['products' => $products]);

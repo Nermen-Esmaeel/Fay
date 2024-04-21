@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Product;
 use App\Models\Card;
 use App\Models\Ebook;
+use App\Http\Resources\ProductResource;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -101,11 +102,11 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
-    {
-        // Retrieve a specific product
-        return response()->json($product);
-    }
+    public function show($id)
+{
+    $product = Product::findOrFail($id);
+    return new ProductResource($product);
+}
 
     /**
      * Update the specified product in storage.

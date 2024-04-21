@@ -63,8 +63,12 @@ Route::middleware(['auth'])->group(function(){
 
 // Admin Dashboard Routes :
 Route::middleware(['isAdmin'])->group(function(){
-    // Categories index :
+    // Products for specific category :
+    Route::get('/dashboard/categoryProducts/{id}', [DashboardController::class, 'categoryProducts'])->name('dashboard.category.products');
+    // Show specific product :
+    Route::get('/dashboard/showProduct/{id}', [DashboardController::class, 'showProduct'])->name('dashboard.show.product');
     Route::get('/dashboard/categories', [DashboardController::class, 'categories'])->withoutMiddleware(['auth:api']);
+
     // Add Category :
     Route::post('/dashboard/categories/store', [CategoryController::class, 'store'])->name('dashboard.categories.store');
     // Update Category :
@@ -75,6 +79,8 @@ Route::middleware(['isAdmin'])->group(function(){
 
     // Products index :
     Route::get('/dashboard/products', [DashboardController::class, 'products'])->name('dashboard.products');
+    // Search products :
+    Route::get('/dashboard/searchProducts', [DashboardController::class, 'searchProducts'])->name('dashboard.search.products');
     // Add Product :
     Route::post('/dashboard/products/store', [ProductController::class, 'store'])->name('dashboard.products.store');
     // Update Product :
@@ -84,8 +90,6 @@ Route::middleware(['isAdmin'])->group(function(){
     // Update Is Published Product :
     Route::put('/dashboard/products/update_is_published/{id}', [ProductController::class, 'updateIsPublished'])->name('dashboard.products.updateIsPublished');
 
-    // Bset Sellings index :
-    Route::get('/dashboard/best_sellings_books', [DashboardController::class, 'best_sellings_books'])->name('dashboard.best_sellings_books');
     // Update Best Selling Product :
     Route::put('/dashboard/products/update_best_sellings/{id}', [ProductController::class, 'updateIsBsetSelling'])->name('dashboard.products.updateIsBestSellings');
 
