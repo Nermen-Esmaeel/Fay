@@ -24,6 +24,8 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => ['sometimes', 'required', 'string', 'min:2'],
             'email' => ['sometimes', 'required', 'email:filter', 'unique:users'],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'], // Validate image upload
+            'avatar_id' => ['nullable', 'string'] // Validate avatar id
         ];
     }
 }

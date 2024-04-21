@@ -17,9 +17,10 @@ Route::get('homeReviews', [HomeController::class, 'homeReviews'])->name('homeRev
 Route::get('products', [HomeController::class, 'products'])->name('products');
 Route::get('showProduct/{id}', [HomeController::class, 'showProduct'])->name('product.show');
 Route::get('productsRelated', [HomeController::class, 'products'])->name('product.related.products');
-Route::get('product/{id}/comments', [ProductController::class, 'showCommentProduct'])->name('product.comments');
-Route::get('product/serach', [HomeController::class, 'serach'])->name('serach');
+Route::get('product/{id}/comments', [HomeController::class, 'showCommentProduct'])->name('product.comments');
+Route::get('product/serach/{search_txt}', [HomeController::class, 'search'])->name('serach');
 Route::post('contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('contact/productsName', [HomeController::class, 'productsName'])->name('products.name');
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -62,12 +63,12 @@ Route::middleware(['auth'])->group(function(){
 
 // Admin Dashboard Routes :
 Route::middleware(['isAdmin'])->group(function(){
-    // Categories index :
-    Route::get('/dashboard/categories', [DashboardController::class, 'categories'])->name('dashboard.categories');
     // Products for specific category :
     Route::get('/dashboard/categoryProducts/{id}', [DashboardController::class, 'categoryProducts'])->name('dashboard.category.products');
     // Show specific product :
     Route::get('/dashboard/showProduct/{id}', [DashboardController::class, 'showProduct'])->name('dashboard.show.product');
+    Route::get('/dashboard/categories', [DashboardController::class, 'categories'])->withoutMiddleware(['auth:api']);
+
     // Add Category :
     Route::post('/dashboard/categories/store', [CategoryController::class, 'store'])->name('dashboard.categories.store');
     // Update Category :

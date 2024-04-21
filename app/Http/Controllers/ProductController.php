@@ -33,13 +33,13 @@ class ProductController extends Controller
             'name' => 'required|max:70',
             'age' => 'required|max:70',
             'about' => 'required|max:600',
-            'image' => 'required|image|mimes:jpeg,png|max:2048',
+            'image.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'arabic_file' => 'mimes:pdf',
             'english_file' => 'mimes:pdf',
             'exercises_file' => 'mimes:pdf',
             'short_story_file' => 'mimes:pdf',
-            'cards_file' => 'mimes:pdf',
-            'ebooks_file' => 'mimes:pdf',
+            'cards_file.*' => 'mimes:pdf',
+            'ebooks_file.*' => 'mimes:pdf',
         ]);
 
         // Save image
@@ -50,12 +50,13 @@ class ProductController extends Controller
         $arabicPath = $arabicFile ? $arabicFile->store('arabic_files', 'public') : null;
         $englishFile = $request->file('english_file');
         $englishPath = $englishFile ? $englishFile->store('english_files', 'public') : null;
-        $exercisesFile = $request->file('exercises_files');
+        $exercisesFile = $request->file('exercises_file');
         $exercisesPath = $exercisesFile ? $exercisesFile->store('exercises_files', 'public') : null;
         $shortStoryFile = $request->file('short_story_file');
-        $shortStoryPath = $shortStoryFile ? $shortStoryFile->store('shortStoryFile', 'public') : null;
+        $shortStoryPath = $shortStoryFile ? $shortStoryFile->store('short_story_files', 'public') : null;
 
         // Create a new product record
+
         $product = new Product();
         $product->category_id = $request->input('category_id');
         $product->name = $request->input('name');
@@ -68,6 +69,7 @@ class ProductController extends Controller
         $product->short_Story_file_path = $shortStoryPath;
         $product->save();
 
+
         if ($request->hasFile('cards_file')) {
             foreach ($request->file('cards_file') as $card) {
                 $cardPath = $card->store('cards_file', 'public');
@@ -75,6 +77,7 @@ class ProductController extends Controller
                 $card->product_id = $product->id;
                 $card->card_file_path = $cardPath;
                 $card->save();
+
             }
         }
 
@@ -88,7 +91,12 @@ class ProductController extends Controller
             }
         }
 
-        return redirect()->route('dashboard.products')->with('success', 'Product created successfully!');
+
+        return response()->json([
+            'product' => $product ,
+            'message' => 'Product created successfully'
+        ]);
+
     }
 
     /**
@@ -158,7 +166,7 @@ class ProductController extends Controller
         // Save the changes
         $product->save();
 
-        return response()->json(['message' => 'Product updated successfully']);
+
     }
 
     /**

@@ -10,6 +10,7 @@ class Card extends Model
     use HasFactory;
 
     protected $fillable = [
+        'product_id',
         'card_file_path',
     ];
 
