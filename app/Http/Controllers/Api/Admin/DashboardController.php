@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Category;
-use Illuminate\Http\Request;
-use App\Models\Product;
 use App\Models\Comment;
 use App\Models\Contact;
+use App\Models\Product;
+use App\Models\Category;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 use function Laravel\Prompts\select;
+use App\Http\Resources\ProductResource;
 
 class DashboardController extends Controller
 {
@@ -34,16 +35,16 @@ class DashboardController extends Controller
     public function showProduct($id) {
         $product = Product::findOrFail($id);
 
-        return response()->json($product);
+        return response()->json(new ProductResource($product));
     }
 
     public function products() {
-        $products = Product::with('category')
+        $products = Product::with(['category','cards','ebooks'])
             ->orderBy('created_at', 'desc') // Sort by creation date in descending order
             ->get();
 
         // Return the latest products as JSON
-        return response()->json($products);
+        return response()->json(ProductResource::collection($products));
     }
 
     public function searchProducts(Request $request)

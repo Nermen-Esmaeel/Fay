@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
@@ -21,9 +22,10 @@ class Product extends Model
         'category_id',
     ];
 
-    public function cards()
+
+    public function cards(): HasMany
     {
-        return $this->hasMany(Card::class);
+        return $this->hasMany(Card::class, 'product_id', 'id');
     }
 
     public function ebooks()

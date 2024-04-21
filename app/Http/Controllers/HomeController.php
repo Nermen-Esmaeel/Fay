@@ -70,23 +70,6 @@ class HomeController extends Controller
         ]);
     }
 
-    // public function serach ($search_txt) {
-    //     // Search products by name or description
-    //     $products = Product::whereTranslationLike('name', '%' . $search_txt . '%')
-    //         ->orWhereTranslationLike('description', '%' . $search_txt . '%')
-    //         ->get();
-
-    //     // Search products by variations (attribute values)
-    //     $productsWithVariations = Product::whereHas('variations', function ($query) use ($search_txt) {
-    //         $query->where('value', 'like', $search_txt);
-    //     })->get();
-
-    //     // Combine both sets of results
-    //     $combinedProducts = $products->concat($productsWithVariations);
-
-    //     // Return the combined products as a JSON response
-    //     return JsonResponse::json(['products' => $combinedProducts]);
-    // }
 
     public function search(Request $request)
     {

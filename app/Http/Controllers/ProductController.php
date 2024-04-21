@@ -17,9 +17,10 @@ class ProductController extends Controller
     public function index()
     {
         // Retrieve all products
-        $products = Product::with('category')->get();
-
-        return response()->json($products);
+        $products = Product::with(['category','cards','ebooks'])->get();
+        return response()->json([
+            ProductResource::collection($products),
+        ], 200);
     }
 
     /**
@@ -27,6 +28,7 @@ class ProductController extends Controller
      */
         public function store(Request $request)
     {
+
         // Validate request data (customize as needed)
         $request->validate([
             'category_id' => 'required',
@@ -81,8 +83,9 @@ class ProductController extends Controller
             }
         }
 
-        if ($request->hasFile('ebooks_files')) {
-            foreach ($request->file('ebooks_files') as $ebook) {
+
+        if ($request->hasFile('ebooks_file')) {
+            foreach ($request->file('ebooks_file') as $ebook) {
                 $ebookPath = $ebook->store('ebooks_file', 'public');
                 $ebook = new Ebook();
                 $ebook->product_id = $product->id;
@@ -91,9 +94,10 @@ class ProductController extends Controller
             }
         }
 
+        $product = Product::find($product->id)->with(['cards','ebooks'])->orderBy('id', 'Desc')->first();
 
         return response()->json([
-            'product' => $product ,
+            'product' => new ProductResource($product),
             'message' => 'Product created successfully'
         ]);
 
@@ -118,6 +122,8 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
+
+
         // Validate the incoming request data
         $request->validate([
             'name' => 'required|string|max:70',
@@ -128,6 +134,8 @@ class ProductController extends Controller
             'english_file' => 'file|mimes:pdf',
             'exercises_file' => 'file|mimes:pdf',
             'short_story_file' => 'file|mimes:pdf',
+            'cards_file.*' => 'mimes:pdf',
+            'ebooks_file.*' => 'mimes:pdf',
         ]);
 
         // Find the product by ID
@@ -163,8 +171,50 @@ class ProductController extends Controller
             $product->short_Story_file_path = $request->file('short_story_file')->store('short_story_files', 'public');
         }
 
+
+        //cards file
+        if ($request->hasFile('cards_file')) {
+
+            $cards_file_path = Card::where('product_id', $product->id)->get();
+            foreach( $cards_file_path as $card_path){
+                Storage::disk('public')->delete($card_path->card_file_path);
+            }
+
+            foreach ($request->file('cards_file') as $card) {
+                $cardPath = $card->store('cards_file', 'public');
+                $product->cards()->where('product_id', $product->id)->update([
+                    'card_file_path' => $cardPath
+                ]);
+            }
+        }
+
+
+
+        //Ebook file
+        if ($request->hasFile('ebooks_file')) {
+
+            $ebooks_file_path = Ebook::where('product_id', $product->id)->get();
+            foreach( $ebooks_file_path as $ebooks_file_path){
+                Storage::disk('public')->delete($ebooks_file_path->ebook_file_path);
+            }
+
+            foreach ($request->file('ebooks_file') as $ebook) {
+                $ebookPath = $ebook->store('ebooks_file', 'public');
+                $product->ebooks()->update([
+                    'ebook_file_path' => $ebookPath
+                ]);
+            }
+        }
+
         // Save the changes
         $product->save();
+
+
+        $product = Product::with(['ebooks', 'cards'])->find($product->id);
+        return response()->json([
+            'product' => new ProductResource($product),
+            'message' => 'Product created successfully'
+        ]);
 
 
     }

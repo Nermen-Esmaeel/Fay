@@ -16,7 +16,7 @@ class CardResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'card_file_path' => $this->card_file_path,
+            'card_file_path' =>  asset('storage/' . $this->card_file_path),
         ];
     }
 }

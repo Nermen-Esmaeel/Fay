@@ -16,7 +16,7 @@ class EbookResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'ebook_file_path' => $this->ebook_file_path,
+            'ebook_file_path' =>  asset('storage/' . $this->ebook_file_path),
         ];
     }
 }
