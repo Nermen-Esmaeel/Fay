@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Comment;
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use App\Http\Resources\ProductResource;
 use Illuminate\Http\JsonResponse;
 
 class HomeController extends Controller
@@ -61,6 +62,7 @@ class HomeController extends Controller
     public function products () {
         // Retrieve published products
         $publishedProducts = Product::where('is_published', 1)
+            ->with(['category', 'cards', 'ebooks'])
             ->select('id', 'image_path')
             ->paginate(10); // Paginate with 10 products per page
 
@@ -69,24 +71,6 @@ class HomeController extends Controller
             'data' => $publishedProducts,
         ]);
     }
-
-    // public function serach ($search_txt) {
-    //     // Search products by name or description
-    //     $products = Product::whereTranslationLike('name', '%' . $search_txt . '%')
-    //         ->orWhereTranslationLike('description', '%' . $search_txt . '%')
-    //         ->get();
-
-    //     // Search products by variations (attribute values)
-    //     $productsWithVariations = Product::whereHas('variations', function ($query) use ($search_txt) {
-    //         $query->where('value', 'like', $search_txt);
-    //     })->get();
-
-    //     // Combine both sets of results
-    //     $combinedProducts = $products->concat($productsWithVariations);
-
-    //     // Return the combined products as a JSON response
-    //     return JsonResponse::json(['products' => $combinedProducts]);
-    // }
 
     public function search(Request $request)
     {
@@ -101,22 +85,8 @@ class HomeController extends Controller
     }
 
     public function showProduct ($id) {
-        // Retrieve the product by ID
         $product = Product::findOrFail($id);
-
-        // Construct the JSON response
-        return response()->json([
-            'id' => $product->id,
-            'category_id' => $product->category_id,
-            'name' => $product->name,
-            'age' => $product->age,
-            'about' => $product->about,
-            'image_path' => $product->image_path,
-            'arabic_file_path' => $product->arabic_file_path,
-            'english_file_path' => $product->english_file_path,
-            'exercises_file_path' => $product->exercises_file_path,
-            'short_Story_file_path' => $product->short_Story_file_path,
-        ]);
+        return new ProductResource($product);
     }
 
     public function showCommentProduct ($id) {
@@ -133,31 +103,31 @@ class HomeController extends Controller
     }
 
     public function contact(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string',
-        'email' => 'required|email',
-        'product_name' => 'required|string',
-        'message' => 'required|string',
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'product_name' => 'required|string',
+            'message' => 'required|string',
+        ]);
 
-    // Check if the product name exists
-    $productExists = Product::where('name', $request->input('product_name'))->exists();
+        // Check if the product name exists
+        $productExists = Product::where('name', $request->input('product_name'))->exists();
 
-    if ($productExists) {
-        // Product exists
-        $product = Product::where('product_name', $request->input('product_name'))->first();
-        $contact = new Contact();
-        $contact->name = $request->input('name');
-        $contact->email = $request->input('email');
-        $contact->product_id = $product->id;
-        $contact->message = $request->input('message');
-        $contact->save();
-        return response()->json(['status' => 'exist', 'message' => 'Product name exists in the database']);
-    } else {
-        // Product does not exist
-        return response()->json(['status' => 'error', 'message' => 'Invalid product name']);
+        if ($productExists) {
+            // Product exists
+            $product = Product::where('product_name', $request->input('product_name'))->first();
+            $contact = new Contact();
+            $contact->name = $request->input('name');
+            $contact->email = $request->input('email');
+            $contact->product_id = $product->id;
+            $contact->message = $request->input('message');
+            $contact->save();
+            return response()->json(['status' => 'exist', 'message' => 'Product name exists in the database']);
+        } else {
+            // Product does not exist
+            return response()->json(['status' => 'error', 'message' => 'Invalid product name']);
+        }
     }
-}
 
 }

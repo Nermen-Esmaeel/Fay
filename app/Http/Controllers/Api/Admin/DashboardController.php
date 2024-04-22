@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\Comment;
 use App\Models\Contact;
@@ -33,59 +34,38 @@ class DashboardController extends Controller
 
     public function showProduct($id) {
         $product = Product::findOrFail($id);
-
-        return response()->json($product);
+        return new ProductResource($product);
     }
 
-    public function productsAll() {
-        $products = Product::with('category')
+    public function products() {
+        $productsPublished = Product::with(['category', 'cards', 'ebooks'])
+            ->where('is_published', 1)
             ->orderBy('created_at', 'desc') // Sort by creation date in descending order
             ->get();
-
-        // Return the latest products as JSON
-        return response()->json($products);
-    }
-
-    public function productsPublished() {
-        $products = Product::where('is_published', 1)
-            ->with('category')
+        $productsNotPublished = Product::with(['category', 'cards', 'ebooks'])
+            ->where('is_published', 0)
             ->orderBy('created_at', 'desc') // Sort by creation date in descending order
             ->get();
-
-        // Return the latest products as JSON
-        return response()->json($products);
-    }
-
-    public function productsNotPublished() {
-        $products = Product::where('is_published', 0)
-            ->with('category')
-            ->orderBy('created_at', 'desc') // Sort by creation date in descending order
-            ->get();
-
-        // Return the latest products as JSON
-        return response()->json($products);
-    }
-
-    public function productsBestSelling() {
-        $products = Product::where('is_published', 1)
+        $productsBestSelling = Product::with(['category', 'cards', 'ebooks'])
+            ->where('is_published', 1)
             ->where('is_best_selling', 1)
-            ->with('category')
+            ->orderBy('created_at', 'desc') // Sort by creation date in descending order
+            ->get();
+        $productsNotBestSelling = Product::with(['category', 'cards', 'ebooks'])
+            ->where('is_published', 1)
+            ->where('is_best_selling', 0)
             ->orderBy('created_at', 'desc') // Sort by creation date in descending order
             ->get();
 
         // Return the latest products as JSON
-        return response()->json($products);
-    }
-
-    public function productsNotBestSelling() {
-        $products = Product::where('is_published', 1)
-            ->where('is_best_selling', 1)
-            ->with('category')
-            ->orderBy('created_at', 'desc') // Sort by creation date in descending order
-            ->get();
-
-        // Return the latest products as JSON
-        return response()->json($products);
+        return response()->json(
+            [
+                'published' => $productsPublished,
+                'not_published' => $productsNotPublished,
+                'best_selling' => $productsBestSelling,
+                'not_best_selling' => $productsNotBestSelling,
+            ]
+        );
     }
 
     public function searchProducts(Request $request)

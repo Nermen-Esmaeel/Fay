@@ -17,7 +17,7 @@ class ProductController extends Controller
     public function index()
     {
         // Retrieve all products
-        $products = Product::with('category')->get();
+        $products = Product::with(['category', 'cards', 'ebooks'])->get();
 
         return response()->json($products);
     }
@@ -95,10 +95,10 @@ class ProductController extends Controller
      * Display the specified resource.
      */
     public function show($id)
-{
-    $product = Product::findOrFail($id);
-    return new ProductResource($product);
-}
+    {
+        $product = Product::findOrFail($id);
+        return new ProductResource($product);
+    }
 
     /**
      * Update the specified product in storage.
