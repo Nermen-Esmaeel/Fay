@@ -11,17 +11,6 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        // Retrieve all products
-        $products = Product::with(['category','cards','ebooks'])->get();
-        return response()->json([
-            ProductResource::collection($products),
-        ], 200);
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -270,7 +259,7 @@ class ProductController extends Controller
         $product->is_published = $request->is_published;
         $product->save();
 
-        return response()->json($product);
+        return response()->json($product->with(['ebooks', 'cards'])->get());
     }
 
     public function updateIsBsetSelling(Request $request, $id) {
@@ -283,7 +272,8 @@ class ProductController extends Controller
             $product->is_best_selling = $request->is_best_selling;
             $product->save();
 
-            return response()->json($product);
+
+            return response()->json($product->with(['ebooks', 'cards'])->get());
         } else {
             return response()->json('error product is not published');
         }

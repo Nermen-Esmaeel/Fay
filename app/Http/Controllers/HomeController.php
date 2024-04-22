@@ -7,6 +7,7 @@ use App\Models\Contact;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use App\Http\Resources\ProductResource;
 
 class HomeController extends Controller
 {
@@ -58,7 +59,7 @@ class HomeController extends Controller
         return  response()->json(['comments' => $responseData]);
     }
 
-    public function products () {
+    public function products() {
         // Retrieve published products
         $publishedProducts = Product::where('is_published', 1)
             ->select('id', 'image_path')
@@ -78,6 +79,7 @@ class HomeController extends Controller
         // Query products based on the search term (case-insensitive)
         $products = Product::where('name', 'like', '%' . $searchTerm . '%')
             ->where('is_published', true)
+            ->with(['ebooks' , 'cards'])
             ->get();
 
 
@@ -85,24 +87,6 @@ class HomeController extends Controller
 
     }
 
-    public function showProduct ($id) {
-        // Retrieve the product by ID
-        $product = Product::findOrFail($id);
-
-        // Construct the JSON response
-        return response()->json([
-            'id' => $product->id,
-            'category_id' => $product->category_id,
-            'name' => $product->name,
-            'age' => $product->age,
-            'about' => $product->about,
-            'image_path' => $product->image_path,
-            'arabic_file_path' => $product->arabic_file_path,
-            'english_file_path' => $product->english_file_path,
-            'exercises_file_path' => $product->exercises_file_path,
-            'short_Story_file_path' => $product->short_Story_file_path,
-        ]);
-    }
 
     public function showCommentProduct ($id) {
         $comments = Comment::with(['user'])
@@ -115,6 +99,16 @@ class HomeController extends Controller
     }
     public function showRelatedProducts ($id) {
 
+        $product = Product::findOrFail($id);
+        // Get the category ID of the given product
+        $categoryId = $product->category_id;
+        $relatedProducts = Product::where('category_id', $categoryId)
+            ->where('id', '!=', $id)
+            ->with(['category', 'cards', 'ebooks'])
+            ->take(10)
+            ->get();
+
+        return response()->json($relatedProducts);
     }
 
     public function contact(Request $request)
@@ -145,7 +139,8 @@ class HomeController extends Controller
     }
 }
     public function productsName() {
-        $productsName = Product::pluck('name');
+        $productsName = (object) Product::pluck('name');
+
         return response()->json($productsName);
     }
 

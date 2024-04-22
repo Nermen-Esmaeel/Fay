@@ -15,8 +15,7 @@ use App\Http\Controllers\HomeController;
 Route::get('homeBestSelling', [HomeController::class, 'homeBestSelling'])->name('homeBestSelling');
 Route::get('homeReviews', [HomeController::class, 'homeReviews'])->name('homeReviews');
 Route::get('products', [HomeController::class, 'products'])->name('products');
-Route::get('showProduct/{id}', [HomeController::class, 'showProduct'])->name('product.show');
-Route::get('productsRelated', [HomeController::class, 'products'])->name('product.related.products');
+Route::get('productsRelated/{id}', [HomeController::class, 'showRelatedProducts'])->name('product.related.products');
 Route::get('product/{id}/comments', [HomeController::class, 'showCommentProduct'])->name('product.comments');
 Route::get('product/serach/{search_txt}', [HomeController::class, 'search'])->name('serach');
 Route::post('contact', [HomeController::class, 'contact'])->name('contact');
@@ -36,21 +35,19 @@ Route::post('/productComment', [CommentController::class, 'storeComment'])->midd
 // Store a new review/rating
 Route::post('/productComment/review', [CommentController::class, 'reviewstore'])->middleware('auth');
 
-// Update a comment (only authenticated users)
-// Route::put('/productComment/{comment_id}', [CommentController::class, 'update'])->middleware('auth');
+// Show comments for a specific product
+Route::post('/productComment/{product_id}', [CommentController::class, 'index']);
 
-// Delete a comment (only authenticated users)
-// Route::delete('/productComment/{comment_id}', [CommentController::class, 'destroy'])->middleware('auth');
+
 
 Route::post('auth/register', [AuthController::class, 'register']);
 Route::post('auth/login', [AuthController::class, 'login']);
 
 
-    Route::middleware('auth:api')->group(function(){
-        Route::post('auth/logout', [AuthController::class, 'logout']);
-    });
-// Show comments for a specific product
-Route::post('/productComment/{product_id}', [CommentController::class, 'index']);
+Route::middleware('auth:api')->group(function(){
+    Route::post('auth/logout', [AuthController::class, 'logout']);
+});
+
 
 Route::middleware(['auth'])->group(function(){
 
@@ -80,7 +77,7 @@ Route::middleware(['isAdmin'])->group(function(){
 
 
     // Products index :
-    Route::get('/dashboard/products', [DashboardController::class, 'products'])->name('dashboard.products');
+    Route::get('/dashboard/products', [DashboardController::class, 'products'])->name('dashboard.products')->withoutMiddleware(['isAdmin']);;
     // Search products :
     Route::get('/dashboard/searchProducts', [DashboardController::class, 'searchProducts'])->name('dashboard.search.products');
     // Add Product :
@@ -93,7 +90,7 @@ Route::middleware(['isAdmin'])->group(function(){
     Route::put('/dashboard/products/update_is_published/{id}', [ProductController::class, 'updateIsPublished'])->name('dashboard.products.updateIsPublished');
 
     // Update Best Selling Product :
-    Route::put('/dashboard/products//{id}', [ProductController::class, 'updateIsBsetSelling'])->name('dashboard.products.updateIsBestSellings');
+    Route::put('/dashboard/products/update_is_best_selling/{id}', [ProductController::class, 'updateIsBsetSelling'])->name('dashboard.products.updateIsBestSellings');
 
     // Comments index :
     Route::get('/dashboard/comments', [DashboardController::class, 'comments'])->name('dashboard.comments');
@@ -109,9 +106,6 @@ Route::middleware(['isAdmin'])->group(function(){
     // Show Contact :
     Route::get('/dashboard/contacts/show/{id}', [DashboardController::class, 'show'])->name('dashboard.contacts.show');
 
-
-// Delete a comment (only admin)
-// Route::delete('/productComment/{comment_id}', [CommentController::class, 'destroy']);
 
 
 });

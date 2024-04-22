@@ -38,14 +38,41 @@ class DashboardController extends Controller
         return response()->json(new ProductResource($product));
     }
 
-    public function products() {
-        $products = Product::with(['category','cards','ebooks'])
-            ->orderBy('created_at', 'desc') // Sort by creation date in descending order
-            ->get();
 
-        // Return the latest products as JSON
-        return response()->json(ProductResource::collection($products));
-    }
+        public function products() {
+
+            $productsPublished = Product::with(['category', 'cards', 'ebooks'])
+                ->where('is_published', 1)
+                ->orderBy('created_at', 'desc') // Sort by creation date in descending order
+                ->get();
+
+            $productsNotPublished = Product::with(['category', 'cards', 'ebooks'])
+                ->where('is_published', 0)
+                ->orderBy('created_at', 'desc') // Sort by creation date in descending order
+                ->get();
+            $productsBestSelling = Product::with(['category', 'cards', 'ebooks'])
+                ->where('is_published', 1)
+                ->where('is_best_selling', 1)
+                ->orderBy('created_at', 'desc') // Sort by creation date in descending order
+                ->get();
+            $productsNotBestSelling = Product::with(['category', 'cards', 'ebooks'])
+                ->where('is_published', 1)
+                ->where('is_best_selling', 0)
+                ->orderBy('created_at', 'desc') // Sort by creation date in descending order
+                ->get();
+
+
+            // Return the latest products as JSON
+            return response()->json(
+                [
+                    'published' => $productsPublished,
+                    'not_published' => $productsNotPublished,
+                    'best_selling' => $productsBestSelling,
+                    'not_best_selling' => $productsNotBestSelling,
+                ]
+            );
+        }
+
 
     public function searchProducts(Request $request)
     {
