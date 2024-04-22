@@ -37,8 +37,50 @@ class DashboardController extends Controller
         return response()->json($product);
     }
 
-    public function products() {
+    public function productsAll() {
         $products = Product::with('category')
+            ->orderBy('created_at', 'desc') // Sort by creation date in descending order
+            ->get();
+
+        // Return the latest products as JSON
+        return response()->json($products);
+    }
+
+    public function productsPublished() {
+        $products = Product::where('is_published', 1)
+            ->with('category')
+            ->orderBy('created_at', 'desc') // Sort by creation date in descending order
+            ->get();
+
+        // Return the latest products as JSON
+        return response()->json($products);
+    }
+
+    public function productsNotPublished() {
+        $products = Product::where('is_published', 0)
+            ->with('category')
+            ->orderBy('created_at', 'desc') // Sort by creation date in descending order
+            ->get();
+
+        // Return the latest products as JSON
+        return response()->json($products);
+    }
+
+    public function productsBestSelling() {
+        $products = Product::where('is_published', 1)
+            ->where('is_best_selling', 1)
+            ->with('category')
+            ->orderBy('created_at', 'desc') // Sort by creation date in descending order
+            ->get();
+
+        // Return the latest products as JSON
+        return response()->json($products);
+    }
+
+    public function productsNotBestSelling() {
+        $products = Product::where('is_published', 1)
+            ->where('is_best_selling', 1)
+            ->with('category')
             ->orderBy('created_at', 'desc') // Sort by creation date in descending order
             ->get();
 

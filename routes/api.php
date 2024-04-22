@@ -76,8 +76,16 @@ Route::middleware(['isAdmin'])->group(function(){
     Route::delete('/dashboard/categories/destroy/{id}', [CategoryController::class, 'destroy'])->name('dashboard.categories.destroy');
 
 
-    // Products index :
-    Route::get('/dashboard/products', [DashboardController::class, 'products'])->name('dashboard.products');
+    // All products index :
+    Route::get('/dashboard/productsAll', [DashboardController::class, 'productsAll'])->name('dashboard.products.all');
+    // Published products index :
+    Route::get('/dashboard/productsPublished', [DashboardController::class, 'productsPublished'])->name('dashboard.products.published');
+    // Not published products index :
+    Route::get('/dashboard/productsNotPublished', [DashboardController::class, 'productsNotPublished'])->name('dashboard.products.not.published');
+    // Best sellings products index :
+    Route::get('/dashboard/productsBestSelling', [DashboardController::class, 'productsBestSelling'])->name('dashboard.products.bestselling');
+    // Not best sellings products index :
+    Route::get('/dashboard/productsNotBestSelling', [DashboardController::class, 'productsNotBestSelling'])->name('dashboard.products.not.bestselling');
     // Search products :
     Route::get('/dashboard/searchProducts', [DashboardController::class, 'searchProducts'])->name('dashboard.search.products');
     // Add Product :
